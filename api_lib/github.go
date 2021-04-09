@@ -26,7 +26,6 @@ func (t *GitHubInfo) InGitHub() bool {
 func (t *GitHubInfo) ShowInfo() {
 	fmt.Println("仓库名: " + t.Repository)
 	fmt.Println("提交SHA: " + t.Sha)
-	fmt.Println("环境变量文件: " + t.EnvFile)
 }
 
 func (t *GitHubInfo) WriteEnvData(envStr string) error {

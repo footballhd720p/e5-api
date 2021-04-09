@@ -19,7 +19,8 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println("access_token=" + tokenInfo.AccessToken + "\n" + "refresh_token" + tokenInfo.RefreshToken)
+	fmt.Println("access_token=" + tokenInfo.AccessToken)
+	fmt.Println("refresh_token=" + tokenInfo.RefreshToken)
 	//读取token信息
 	jwtTokenInfo, err := api_lib.NewJwtTokenInfo(tokenInfo.AccessToken)
 	if err != nil {
@@ -27,7 +28,7 @@ func main() {
 	}
 	jwtTokenInfo.ShowTokenInfo()
 	if time.Now().Unix() > jwtTokenInfo.Exp-90 {
-		fmt.Println("token已过期,准备刷新token")
+		fmt.Println("token已过期或者即将过期,准备刷新token")
 		//刷新token
 		tokenInfo, err = tokenInfo.RefreshNew()
 		if err != nil {
