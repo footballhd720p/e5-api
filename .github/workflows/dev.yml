@@ -1,4 +1,4 @@
-name: Go tester
+name: API dev
 
 on:
   # 推送到master分支时触发
@@ -33,5 +33,7 @@ jobs:
       - name: Run
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APP_TOKEN: ${{ secrets.APP_TOKEN }}
+          APP_R_TOKEN: ${{ secrets.APP_R_TOKEN }}
         run: |
-            go run .
+          go run .
