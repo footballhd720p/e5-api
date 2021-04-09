@@ -4,6 +4,9 @@ on:
   # 推送到master分支时触发
   push:
     branches: [ master ]
+  #每隔6小时自动执行一次
+  schedule:
+    - cron: '0 */6 * * *'
 
 jobs:
 
