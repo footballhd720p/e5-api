@@ -26,7 +26,7 @@ func (t *JwtTokenInfo) ShowTokenInfo() {
 	tm := time.Unix(t.Iat, 0)
 	fmt.Println("access token签发时间: " + tm.Format(timeLayout))
 	tm = time.Unix(t.Exp, 0)
-	fmt.Println("access token签发时间: " + tm.Format(timeLayout))
+	fmt.Println("access token过期时间: " + tm.Format(timeLayout))
 }
 
 func NewJwtTokenInfo(tokenStr string) (*JwtTokenInfo, error) {

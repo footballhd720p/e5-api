@@ -68,10 +68,13 @@ func RequestGraphApi(tokenInfo *TokenInfo) error {
 			Title:   "列出所有应用及计数",
 		},
 	}
-	for _, req := range requestList {
-		if err := req.ProcessRequest(client); err != nil {
-			fmt.Println("GET " + req.Title + " error")
-			return err
+	for i := 0; i < 3; i++ {
+		fmt.Printf("开始第%d轮请求\n", i+1)
+		for _, req := range requestList {
+			if err := req.ProcessRequest(client); err != nil {
+				fmt.Println("GET " + req.Title + " error")
+				return err
+			}
 		}
 	}
 	return nil
