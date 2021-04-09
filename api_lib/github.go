@@ -2,23 +2,20 @@ package api_lib
 
 import (
 	"fmt"
-	"github.com/go-resty/resty/v2"
 	"os"
 )
 
 type GitHubInfo struct {
-	ApiURL     string //api地址
 	Repository string //仓库名称
 	Sha        string //提交hash
-	Token      string //token
+	EnvFile    string //GitHub Action环境变量文件路径
 }
 
 func NewGitHubInfo() *GitHubInfo {
 	return &GitHubInfo{
-		ApiURL:     os.Getenv("GITHUB_API_URL"),
 		Repository: os.Getenv("GITHUB_REPOSITORY"),
 		Sha:        os.Getenv("GITHUB_SHA"),
-		Token:      os.Getenv("GITHUB_TOKEN"),
+		EnvFile:    os.Getenv("GITHUB_ENV"),
 	}
 }
 
@@ -26,23 +23,20 @@ func (t *GitHubInfo) InGitHub() bool {
 	return t.Repository != ""
 }
 
-func (t *GitHubInfo) UpdateSecret(secretName string, secretValue string) error {
-	client := resty.New()
-	client.SetAuthScheme("Bearer")
-	client.SetAuthToken(t.Token)
-	apiUrl := t.ApiURL + "/repos/" + t.Repository + "/actions/secrets/" + secretName
-	resp, err := client.R().
-		EnableTrace().
-		SetBody(map[string]string{
-			"encrypted_value": secretValue,
-		}).Put(apiUrl)
+func (t *GitHubInfo) ShowInfo() {
+	fmt.Println("仓库名: " + t.Repository)
+	fmt.Println("提交SHA: " + t.Sha)
+	fmt.Println("环境变量文件: " + t.EnvFile)
+}
+
+func (t *GitHubInfo) WriteEnvData(envStr string) error {
+	file, err := os.OpenFile(t.EnvFile, os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
 	}
-	// Explore response object
-	fmt.Println("code", resp.StatusCode())
-	fmt.Println(apiUrl)
-	fmt.Println(resp.Request.Header)
-	fmt.Println(resp)
+	defer file.Close()
+	if _, err := file.WriteString("\n" + envStr); err != nil {
+		return err
+	}
 	return nil
 }

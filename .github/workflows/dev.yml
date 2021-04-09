@@ -32,8 +32,25 @@ jobs:
 
       - name: Run
         env:
-          GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
           APP_TOKEN: ${{ secrets.APP_TOKEN }}
           APP_R_TOKEN: ${{ secrets.APP_R_TOKEN }}
         run: |
           go run .
+          echo "::add-mask::$MY_NAME"
+          echo "::add-mask::$MY_NAME"
+
+      - name: Update access token
+        uses: hmanzur/actions-set-secret@v2.0.0
+        with:
+          name: 'APP_TOKEN'
+          value: ${{ env.APP_TOKEN }}
+          repository: ${{ github.repository }}
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+
+      - name: Update refresh token
+        uses: hmanzur/actions-set-secret@v2.0.0
+        with:
+          name: 'APP_R_TOKEN'
+          value: ${{ env.APP_R_TOKEN }}
+          repository: ${{ github.repository }}
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}

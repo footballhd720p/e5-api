@@ -2,6 +2,7 @@ package api_lib
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 )
 
@@ -24,11 +25,13 @@ func saveTokenInfoToFile(tokenInfo *TokenInfo) error {
 }
 
 func saveTokenInfoToGithub(tokenInfo *TokenInfo, githubInfo *GitHubInfo) error {
-	if err := githubInfo.UpdateSecret(tokenSecretKey, tokenInfo.AccessToken); err != nil {
+	envStr := tokenSecretKey + "=" + tokenInfo.AccessToken
+	envStr += "\n" + refreshTokenSecretKey + "=" + tokenInfo.RefreshToken
+	if err := githubInfo.WriteEnvData(envStr); err != nil {
 		return err
 	}
-	if err := githubInfo.UpdateSecret(refreshTokenSecretKey, tokenInfo.RefreshToken); err != nil {
-		return err
-	}
+	//日志中添加掩码
+	fmt.Println("::add-mask::" + tokenInfo.AccessToken)
+	fmt.Println("::add-mask::" + tokenInfo.RefreshToken)
 	return nil
 }
