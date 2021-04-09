@@ -19,4 +19,11 @@ func main() {
 		log.Fatalln(err)
 	}
 	fmt.Println("access_token=" + tokenInfo.AccessToken + "\n" + "refresh_token" + tokenInfo.RefreshToken)
+	//测试更新token
+	tokenInfo.AccessToken = "aacc111"
+	tokenInfo.RefreshToken = "bbcc11"
+	if err := api_lib.SaveTokenInfo(tokenInfo, githubInfo); err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println("access_token=" + tokenInfo.AccessToken + "\n" + "refresh_token" + tokenInfo.RefreshToken)
 }

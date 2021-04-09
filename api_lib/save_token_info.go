@@ -2,11 +2,17 @@ package api_lib
 
 import (
 	"encoding/json"
-	"github.com/go-resty/resty/v2"
 	"io/ioutil"
 )
 
-func SaveTokenInfoToFile(tokenInfo *TokenInfo) error {
+func SaveTokenInfo(tokenInfo *TokenInfo, githubInfo *GitHubInfo) error {
+	if githubInfo.InGitHub() {
+		return saveTokenInfoToGithub(tokenInfo, githubInfo)
+	}
+	return saveTokenInfoToFile(tokenInfo)
+}
+
+func saveTokenInfoToFile(tokenInfo *TokenInfo) error {
 	jsonData, err := json.Marshal(tokenInfo)
 	if err != nil {
 		return err
@@ -17,9 +23,12 @@ func SaveTokenInfoToFile(tokenInfo *TokenInfo) error {
 	return nil
 }
 
-func SaveTokenInfoToGithub(tokenInfo *TokenInfo, githubInfo *GitHubInfo) error {
-	client := resty.New()
-	client.SetAuthScheme("token")
-	client.SetAuthToken(githubInfo.Token)
+func saveTokenInfoToGithub(tokenInfo *TokenInfo, githubInfo *GitHubInfo) error {
+	if err := githubInfo.UpdateSecret(tokenSecretKey, tokenInfo.AccessToken); err != nil {
+		return err
+	}
+	if err := githubInfo.UpdateSecret(refreshTokenSecretKey, tokenInfo.RefreshToken); err != nil {
+		return err
+	}
 	return nil
 }

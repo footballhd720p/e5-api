@@ -32,7 +32,7 @@ jobs:
 
       - name: Run
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
           APP_TOKEN: ${{ secrets.APP_TOKEN }}
           APP_R_TOKEN: ${{ secrets.APP_R_TOKEN }}
         run: |
