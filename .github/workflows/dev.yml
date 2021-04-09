@@ -32,14 +32,16 @@ jobs:
 
       - name: Run
         env:
+          APP_CLIENT_ID: ${{ secrets.APP_CLIENT_ID }}
+          APP_CLIENT_SECRET: ${{ secrets.APP_CLIENT_SECRET }}
           APP_TOKEN: ${{ secrets.APP_TOKEN }}
           APP_R_TOKEN: ${{ secrets.APP_R_TOKEN }}
         run: |
           go run .
-          echo "::add-mask::$MY_NAME"
-          echo "::add-mask::$MY_NAME"
+          echo "SAVE_APP_TOKEN=yes" >> $GITHUB_ENV
 
       - name: Update access token
+        if: env.SAVE_APP_TOKEN == 'yes'
         uses: hmanzur/actions-set-secret@v2.0.0
         with:
           name: 'APP_TOKEN'
@@ -48,6 +50,7 @@ jobs:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
       - name: Update refresh token
+        if: env.SAVE_APP_TOKEN == 'yes'
         uses: hmanzur/actions-set-secret@v2.0.0
         with:
           name: 'APP_R_TOKEN'

@@ -25,8 +25,9 @@ func saveTokenInfoToFile(tokenInfo *TokenInfo) error {
 }
 
 func saveTokenInfoToGithub(tokenInfo *TokenInfo, githubInfo *GitHubInfo) error {
-	envStr := tokenSecretKey + "=" + tokenInfo.AccessToken
-	envStr += "\n" + refreshTokenSecretKey + "=" + tokenInfo.RefreshToken
+	envStr := accessTokenKey + "=" + tokenInfo.AccessToken
+	envStr += "\n" + refreshTokenKey + "=" + tokenInfo.RefreshToken
+	envStr += "\nSAVE_APP_TOKEN=yes"
 	if err := githubInfo.WriteEnvData(envStr); err != nil {
 		return err
 	}
