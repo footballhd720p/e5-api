@@ -26,10 +26,10 @@ func main() {
 		log.Fatalln(err)
 	}
 	jwtTokenInfo.ShowTokenInfo()
-	if time.Now().Unix() > jwtTokenInfo.Exp {
+	if time.Now().Unix() > jwtTokenInfo.Exp-90 {
 		fmt.Println("token已过期,准备刷新token")
 		//刷新token
-		tokenInfo, err := tokenInfo.RefreshNew()
+		tokenInfo, err = tokenInfo.RefreshNew()
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -43,5 +43,8 @@ func main() {
 		fmt.Println("token未过期,无需刷新")
 	}
 	//请求Microsoft365 api
+	if err := api_lib.RequestGraphApi(tokenInfo); err != nil {
+		log.Fatalln(err)
+	}
 	//fmt.Println("access_token=" + newTokenInfo.AccessToken + "\n" + "refresh_token" + newTokenInfo.RefreshToken)
 }
