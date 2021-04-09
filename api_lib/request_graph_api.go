@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-resty/resty/v2"
+	"math/rand"
+	"time"
 )
 
 type ApiRequest struct {
@@ -68,8 +70,12 @@ func RequestGraphApi(tokenInfo *TokenInfo) error {
 			Title:   "列出所有应用及计数",
 		},
 	}
-	for i := 0; i < 3; i++ {
-		fmt.Printf("开始第%d轮请求\n", i+1)
+	rand.Seed(time.Now().Unix())
+	//随机 [5 ~ 10)轮
+	sCount := rand.Intn(5) + 5
+	fmt.Printf("本次随机调用次数：%d轮\n", sCount)
+	for i := 0; i < sCount; i++ {
+		fmt.Printf("\n开始第%d轮请求=================\n", i+1)
 		for _, req := range requestList {
 			if err := req.ProcessRequest(client); err != nil {
 				fmt.Println("GET " + req.Title + " error")

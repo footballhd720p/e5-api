@@ -18,3 +18,16 @@
 
 
 > `config.json`是本地跑api时才需要修改,如果使用GitHub action, 无需修改此文件。
+
+
+
+azure应用,确保应用有以下权限: 
+
+| 类型  | 权限                                                         |
+| ----- | ------------------------------------------------------------ |
+| files | Files.Read.All、Files.ReadWrite.All、Sites.Read.All、Sites.ReadWrite.All |
+| user  | User.Read.All、User.ReadWrite.All、Directory.Read.All、Directory.ReadWrite.All |
+| mail  | Mail.Read、Mail.ReadWrite、MailboxSettings.Read、MailboxSettings.ReadWrite |
+
+
+> 注册后一定要再点代表xxx授予管理员同意,否则outlook api无法调用
