@@ -70,8 +70,16 @@ func RequestGraphApi(tokenInfo *TokenInfo) error {
 			Title:   "我最近使用的文件",
 		},
 		{
+			ApiPath: "/me/drive/following",
+			Title:   "列出onedrive关注的项",
+		},
+		{
 			ApiPath: "/me/messages",
 			Title:   "我的邮件",
+		},
+		{
+			ApiPath: "/me/mailFolders",
+			Title:   "列出邮件文件夹",
 		},
 		{
 			ApiPath: "/me/mailFolders/inbox/messagerules",
@@ -88,6 +96,10 @@ func RequestGraphApi(tokenInfo *TokenInfo) error {
 		{
 			ApiPath: "/applications?$count=true",
 			Title:   "列出所有应用及计数",
+		},
+		{
+			ApiPath: "/servicePrincipals",
+			Title:   "获取服务主体列表",
 		},
 	}
 	rand.Seed(time.Now().Unix())
