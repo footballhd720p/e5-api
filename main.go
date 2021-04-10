@@ -27,7 +27,9 @@ func main() {
 		log.Fatalln(err)
 	}
 	jwtTokenInfo.ShowTokenInfo()
-	if time.Now().Unix() > jwtTokenInfo.Exp-90 {
+	timeNow := time.Now()
+	fmt.Println("现在时间: " + timeNow.Format(api_lib.TimeLayout))
+	if timeNow.Unix() > jwtTokenInfo.Exp-90 {
 		fmt.Println("token已过期或者即将过期,准备刷新token")
 		//刷新token
 		tokenInfo, err = tokenInfo.RefreshNew()

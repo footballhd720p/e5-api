@@ -52,7 +52,6 @@ jobs:
         with:
           name: 'APP_TOKEN'
           value: ${{ env.APP_TOKEN }}
-          repository: ${{ github.repository }}
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
       - name: Update refresh token
@@ -62,5 +61,4 @@ jobs:
         with:
           name: 'APP_R_TOKEN'
           value: ${{ env.APP_R_TOKEN }}
-          repository: ${{ github.repository }}
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
