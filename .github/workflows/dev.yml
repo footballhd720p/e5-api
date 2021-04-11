@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
   #每隔6小时自动执行一次
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '20 */6 * * *'
 
 jobs:
 
