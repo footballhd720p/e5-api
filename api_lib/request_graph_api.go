@@ -103,7 +103,8 @@ func RequestGraphApi(tokenInfo *TokenInfo) error {
 		rand.Shuffle(len(requestList), func(i, j int) {
 			requestList[i], requestList[j] = requestList[j], requestList[i]
 		})
-		for _, req := range requestList {
+		//每次请求3/4的api
+		for _, req := range requestList[0 : len(requestList)*3/4] {
 			reqHandler := defaultRequestHandler
 			if req.Handler != nil {
 				reqHandler = req.Handler
