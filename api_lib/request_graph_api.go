@@ -11,38 +11,22 @@ import (
 type ApiRequest struct {
 	ApiPath string
 	Title   string
+	Handler func(client *resty.Client, req *ApiRequest) error
 }
 
-func (req *ApiRequest) ProcessRequest(client *resty.Client) error {
+//普通的GET请求
+func defaultRequestHandler(client *resty.Client, req *ApiRequest) error {
 	resp, err := client.R().Get(req.ApiPath)
 	if err != nil {
+		fmt.Println("GET " + req.Title + " error")
 		return err
 	}
 	statusCode := resp.StatusCode()
 	if statusCode != 200 {
+		fmt.Println("GET " + req.Title + " error")
 		return errors.New(resp.String())
 	}
 	fmt.Println("GET " + req.Title + " OK")
-	//fmt.Println(resp.String())
-	return nil
-}
-
-//测试写入OneDrive
-func ProcessWriteOneDrive(client *resty.Client, req *ApiRequest) error {
-	timeNow := time.Now()
-	bodyStr := "E5 API运行于" + timeNow.Format(TimeLayout)
-	resp, err := client.R().
-		SetHeader("Content-Type", "text/plain").
-		SetBody(bodyStr).
-		Put(req.ApiPath)
-	if err != nil {
-		return err
-	}
-	statusCode := resp.StatusCode()
-	if statusCode != 200 && statusCode != 201 {
-		return errors.New(resp.String())
-	}
-	fmt.Println("PUT " + req.Title + " OK")
 	//fmt.Println(resp.String())
 	return nil
 }
@@ -102,28 +86,32 @@ func RequestGraphApi(tokenInfo *TokenInfo) error {
 			Title:   "获取服务主体列表",
 		},
 	}
-	rand.Seed(time.Now().Unix())
+	timeNow := time.Now()
+	fileName := timeNow.Format("2006/01/02") + ".txt"
+	requestList = append(requestList, &ApiRequest{
+		ApiPath: "/me/drive/root:/e5/log-" + fileName + ":/content",
+		Title:   "写入Onedrive文件",
+		Handler: writeOneDriveHandler,
+	})
+	rand.Seed(timeNow.Unix())
 	//随机 [5 ~ 10)轮
 	sCount := rand.Intn(5) + 5
 	fmt.Printf("本次随机调用次数：%d轮\n", sCount)
 	for i := 0; i < sCount; i++ {
 		fmt.Printf("\n开始第%d轮请求=================\n", i+1)
+		//打乱请求顺序
+		rand.Shuffle(len(requestList), func(i, j int) {
+			requestList[i], requestList[j] = requestList[j], requestList[i]
+		})
 		for _, req := range requestList {
-			if err := req.ProcessRequest(client); err != nil {
+			reqHandler := defaultRequestHandler
+			if req.Handler != nil {
+				reqHandler = req.Handler
+			}
+			if err := reqHandler(client, req); err != nil {
 				fmt.Println("GET " + req.Title + " error")
 				return err
 			}
-		}
-		//
-		timeNow := time.Now()
-		fileName := timeNow.Format("2006_01_02") + ".txt"
-		oneDriveReq := &ApiRequest{
-			ApiPath: "/me/drive/root:/e5/log_" + fileName + ":/content",
-			Title:   "写入Onedrive文件",
-		}
-		if err := ProcessWriteOneDrive(client, oneDriveReq); err != nil {
-			fmt.Println("PUT " + oneDriveReq.Title + " error")
-			return err
 		}
 	}
 	return nil
